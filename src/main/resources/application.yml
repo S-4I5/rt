@@ -1,18 +1,15 @@
 spring:
-  jpa:
-    show-sql: true
-    defer-datasource-initialization: true
-    properties:
-      hibernate:
-        ddl-auto: update
-        dialect=org.hibernate.dialect: PostgreSQLDialect
-      jdbc:
-        lob:
-          non_contextual_creation: true
   datasource:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://127.0.0.1:5432/test
     username: postgres
     password: password
-  sql:
-    init.mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
