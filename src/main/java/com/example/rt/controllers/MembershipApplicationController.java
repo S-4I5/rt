@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/apply")
 public class MembershipApplicationController {
     @PostMapping()
-    void apply() {
+    void applyMembershipApplication() {
 
     }
     @PostMapping("{id}")
-    void accept() {
+    void acceptMembershipApplication() {
 
     }
 }

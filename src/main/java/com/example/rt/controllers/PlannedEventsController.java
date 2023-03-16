@@ -12,10 +12,12 @@ public class PlannedEventsController {
     String getPlannedEvents() {
         return "plan birthday";
     }
+
     @PostMapping()
     void suggestEvent() {
 
     }
+
     @PostMapping("{id}")
     void acceptEvent() {
 
