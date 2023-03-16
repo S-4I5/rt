@@ -12,7 +12,7 @@ public class NewsController {
     String getBasicNews() {
         return "a";
     }
-    
+
     @PostMapping()
     void postNews() {
 
