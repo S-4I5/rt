@@ -11,6 +11,7 @@ public class MembershipApplicationController {
     void applyMembershipApplication() {
 
     }
+    
     @PostMapping("{id}")
     void acceptMembershipApplication() {
 
