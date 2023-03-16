@@ -8,21 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping(value = "/news")
 public class NewsController {
-    @GetMapping("news")
+    @GetMapping()
     String getBasicNews() {
         return "a";
     }
-
-    @GetMapping("photo-reports")
-    void getBasicEventPhotoReports() {
-
-    }
-    @PostMapping("news")
+    
+    @PostMapping()
     void postNews() {
-
-    }
-    @PostMapping("photo-reports")
-    void postPhotoReport() {
 
     }
 }
