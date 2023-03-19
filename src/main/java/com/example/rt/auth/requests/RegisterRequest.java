@@ -1,15 +1,12 @@
-package com.example.rt.auth;
+package com.example.rt.auth.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class RegisterRequest{
 
     private String firstname;
 

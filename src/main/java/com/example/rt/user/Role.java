@@ -1,4 +1,4 @@
-package com.example.rt.model;
+package com.example.rt.user;
 
 public enum Role {
     ADMIN,

@@ -1,6 +1,6 @@
 package com.example.rt.config;
 
-import com.example.rt.services.JWTService;
+import com.example.rt.auth.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

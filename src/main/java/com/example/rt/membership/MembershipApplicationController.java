@@ -1,4 +1,4 @@
-package com.example.rt.controllers;
+package com.example.rt.membership;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

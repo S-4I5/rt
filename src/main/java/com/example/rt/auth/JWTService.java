@@ -1,4 +1,4 @@
-package com.example.rt.services;
+package com.example.rt.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -53,10 +53,10 @@ public class JWTService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpriration(token).before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpriration(String token){
+    private Date extractExpiration(String token){
         return extractClaim(token, Claims::getExpiration);
     }
 

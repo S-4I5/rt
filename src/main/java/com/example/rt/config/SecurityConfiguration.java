@@ -1,6 +1,5 @@
 package com.example.rt.config;
 
-import com.example.rt.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
