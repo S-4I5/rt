@@ -22,7 +22,6 @@ import java.util.NoSuchElementException;
 @Service
 @AllArgsConstructor
 public class AuthenticationService {
-
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
@@ -30,12 +29,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public ResponseBase register(RegisterRequest request) throws NoSuchElementException{
-
         if(repository.findByEmail(request.getEmail()).isPresent())
             return AuthenticationFailedResponse.builder()
                     .message("User already exists")
                     .build();
-
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -52,7 +49,6 @@ public class AuthenticationService {
     }
 
     public AuthenticationSuccedResponse authenticate(AuthenticationRequest request) {
-
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

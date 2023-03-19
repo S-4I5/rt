@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationSuccedResponse extends ResponseBase {
-
     private String token;
-
 }

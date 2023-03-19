@@ -35,7 +35,6 @@ public class User implements UserDetails {
     private String email;
     @Length(min = 6, max = 30, message = "Lastname's length is incorrect")
     private String password;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
