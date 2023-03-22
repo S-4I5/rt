@@ -1,4 +1,4 @@
-package com.example.rt.repository;
+package com.example.rt.news;
 
 import org.springframework.stereotype.Repository;
 

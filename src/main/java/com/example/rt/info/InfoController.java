@@ -1,4 +1,4 @@
-package com.example.rt.controllers;
+package com.example.rt.info;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
