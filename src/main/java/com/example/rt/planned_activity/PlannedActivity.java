@@ -15,19 +15,12 @@ public class PlannedActivity {
     @Id
     @GeneratedValue
     private Long id;
-
     private String title;
-
     private String description;
-
     private String placeName;
-
     private String photo;
-
     private Date plannedDate;
-
     private boolean isApproved;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;
