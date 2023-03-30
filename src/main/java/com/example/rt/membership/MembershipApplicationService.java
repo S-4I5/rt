@@ -1,6 +1,6 @@
 package com.example.rt.membership;
 
-import com.example.rt.membership.request.MembershipApplicationRequest;
+import com.example.rt.membership.requests.MembershipApplicationRequest;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ public class MembershipApplicationService {
     private final UserRepository userRepository;
 
     public MembershipApplication applyMembershipApplication(MembershipApplicationRequest request) {
-        if (userRepository.findById(request.getUserId()).isPresent()) {
+        if (userRepository.findById(request.getUserId()).isEmpty()) {
             return null;
         }
 
@@ -28,7 +28,7 @@ public class MembershipApplicationService {
     }
 
     public MembershipApplication acceptMembershipApplication(long id) {
-        if (membershipApplicationRepository.findById(id).isPresent()) {
+        if (membershipApplicationRepository.findById(id).isEmpty()) {
             return null;
         }
 

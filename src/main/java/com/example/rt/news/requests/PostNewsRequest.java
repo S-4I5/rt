@@ -1,7 +1,6 @@
-package com.example.rt.news.request;
+package com.example.rt.news.requests;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 @Data

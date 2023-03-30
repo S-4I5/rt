@@ -1,8 +1,7 @@
 package com.example.rt.membership;
 
-import com.example.rt.membership.request.MembershipApplicationRequest;
+import com.example.rt.membership.requests.MembershipApplicationRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
