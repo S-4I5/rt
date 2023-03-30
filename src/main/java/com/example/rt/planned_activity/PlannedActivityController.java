@@ -1,25 +1,29 @@
 package com.example.rt.planned_activity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping(value = "/events")
+@RequestMapping(value = "/planned-activities")
+@RequiredArgsConstructor
 public class PlannedActivityController {
+    private final PlannedActivityService plannedActivityService;
+
     @GetMapping()
-    String getPlannedEvents() {
-        return "plan birthday";
+    ResponseEntity<List<PlannedActivity>> getPlannedEvents() {
+        return ResponseEntity.ok(plannedActivityService.getPlannedEvents());
     }
 
     @PostMapping()
-    void suggestEvent() {
-
+    ResponseEntity<PlannedActivity> suggestEvent(@RequestBody PostPlannedActivityRequest request) {
+        return ResponseEntity.ok(plannedActivityService.suggestEvent(request));
     }
 
     @PostMapping("{id}")
-    void acceptEvent() {
-
+    void acceptEvent(@PathVariable long id) {
+        plannedActivityService.acceptEvent(id);
     }
 }

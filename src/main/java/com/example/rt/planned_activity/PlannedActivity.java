@@ -1,13 +1,16 @@
 package com.example.rt.planned_activity;
 
 import com.example.rt.user.User;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
+@Builder
+@Entity
+@Table(name = "planned_activity_rt")
 public class PlannedActivity {
     @Id
     @GeneratedValue
