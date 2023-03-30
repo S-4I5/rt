@@ -26,14 +26,14 @@ public class PlannedActivityService {
         }
         return plannedActivityRepository.save(
                 PlannedActivity.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .placeName(request.getPlaceName())
-                .photo(request.getPhoto())
-                .plannedDate(request.getPlannedDate())
-                .isApproved(false)
-                .author(optionalUser.get())
-                .build()
+                        .title(request.getTitle())
+                        .description(request.getDescription())
+                        .placeName(request.getPlaceName())
+                        .photo(request.getPhoto())
+                        .plannedDate(request.getPlannedDate())
+                        .isApproved(false)
+                        .author(optionalUser.get())
+                        .build()
         );
     }
 
