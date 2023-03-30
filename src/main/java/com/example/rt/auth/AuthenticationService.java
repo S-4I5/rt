@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AuthenticationService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
 
     public ResponseBase register(RegisterRequest request) {
-        if (repository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return AuthenticationFailedResponse.builder()
                     .message("User already exists")
                     .build();
@@ -41,7 +41,7 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
 
-        repository.save(user);
+        userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         saveUserToken(user, jwtToken);
 
@@ -58,7 +58,7 @@ public class AuthenticationService {
                 )
         );
 
-        User user = repository.findByEmail(request.getEmail()).orElseThrow();
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
 
         revokeAllUserTokens(user);
