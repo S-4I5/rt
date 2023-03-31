@@ -37,7 +37,12 @@ public class PlannedActivityService {
         );
     }
 
-    public void acceptEvent(long id) {
-        plannedActivityRepository.findById(id).get().setApproved(true);
+    public PlannedActivity acceptEvent(long id) {
+        Optional<PlannedActivity> optionalPlannedActivity = plannedActivityRepository.findById(id);
+        if (optionalPlannedActivity.isEmpty()) {
+            return null;
+        }
+        optionalPlannedActivity.get().setApproved(true);
+        return plannedActivityRepository.save(optionalPlannedActivity.get());
     }
 }

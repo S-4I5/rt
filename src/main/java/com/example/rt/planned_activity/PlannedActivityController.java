@@ -1,5 +1,6 @@
 package com.example.rt.planned_activity;
 
+import com.example.rt.membership.MembershipApplication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,8 @@ public class PlannedActivityController {
         return ResponseEntity.ok(plannedActivityService.suggestEvent(request));
     }
 
-    @PostMapping("{id}")
-    void acceptEvent(@PathVariable long id) {
-        plannedActivityService.acceptEvent(id);
+    @PutMapping("{id}")
+    ResponseEntity<PlannedActivity> acceptEvent(@PathVariable long id) {
+        return ResponseEntity.ok(plannedActivityService.acceptEvent(id));
     }
 }
