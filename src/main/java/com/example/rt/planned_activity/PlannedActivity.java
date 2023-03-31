@@ -24,7 +24,7 @@ public class PlannedActivity {
     private String placeName;
     private String photo;
     private Date plannedDate;
-    private boolean isApproved;
+    private PlannedActivityState state;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User author;

@@ -1,5 +1,6 @@
 package com.example.rt.planned_activity;
 
+import com.example.rt.membership.MembershipApplicationState;
 import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class PlannedActivityService {
                         .placeName(request.getPlaceName())
                         .photo(request.getPhoto())
                         .plannedDate(request.getPlannedDate())
-                        .isApproved(false)
+                        .state(PlannedActivityState.IN_REVIEWING)
                         .author(optionalUser.get())
                         .build()
         );
@@ -42,7 +43,7 @@ public class PlannedActivityService {
         if (optionalPlannedActivity.isEmpty()) {
             return null;
         }
-        optionalPlannedActivity.get().setApproved(true);
+        optionalPlannedActivity.get().setState(PlannedActivityState.APPROVED);
         return plannedActivityRepository.save(optionalPlannedActivity.get());
     }
 }
