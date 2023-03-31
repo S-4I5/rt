@@ -17,22 +17,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-
 @Service
 @AllArgsConstructor
 public class AuthenticationService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public ResponseBase register(RegisterRequest request) throws NoSuchElementException{
-        if(repository.findByEmail(request.getEmail()).isPresent())
+    public ResponseBase register(RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return AuthenticationFailedResponse.builder()
                     .message("User already exists")
                     .build();
+        }
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -40,9 +40,11 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
-        repository.save(user);
+
+        userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         saveUserToken(user, jwtToken);
+
         return AuthenticationSuccedResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -55,11 +57,13 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        User user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
+
         return AuthenticationSuccedResponse.builder()
                 .token(jwtToken)
                 .build();
@@ -73,15 +77,17 @@ public class AuthenticationService {
                 .expired(false)
                 .revoked(false)
                 .build();
+
         tokenRepository.save(token);
     }
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
-            return;
 
-        //validUserTokens.clear();
+        if (validUserTokens.isEmpty()) {
+            return;
+        }
+
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
