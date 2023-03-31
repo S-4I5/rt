@@ -12,9 +12,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.hibernate.validator.constraints.Length;
 
-
-
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,17 +26,21 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private long id;
-    @Length(min = 1, max = 25, message = "Firstname's length is incorrect")
+    //@Length(min = 1, max = 25, message = "Firstname's length is incorrect")
     private String firstname;
-    @Length(min = 1, max = 25, message = "Lastname's length is incorrect")
+    //@Length(min = 1, max = 25, message = "Lastname's length is incorrect")
     private String lastname;
-    @Email(message = "Email is incorrect")
+    //@Email(message = "Email is incorrect")
     private String email;
-    @Length(min = 6, max = 30, message = "Lastname's length is incorrect")
+    //@Length(min = 6, max = 30, message = "Lastname's length is incorrect")
     private String password;
-    @Enumerated(EnumType.STRING)
+    //@Enumerated(EnumType.STRING)
     private Role role;
-
+    private String photo;
+    private String phone_number;
+    private Date birthday_date;
+    private boolean isMember;
+    private long balance;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
