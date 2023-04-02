@@ -14,7 +14,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "planned_activity_rt")
 public class PlannedActivity {
     @Id
     @GeneratedValue
