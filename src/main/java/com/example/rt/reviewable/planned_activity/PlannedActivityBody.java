@@ -1,11 +1,12 @@
-package com.example.rt.planned_activity;
+package com.example.rt.reviewable.planned_activity;
 
-import lombok.Data;
+import com.example.rt.reviewable.Body;
+import jakarta.persistence.Embeddable;
 
 import java.util.Date;
 
-@Data
-public class PostPlannedActivityRequest {
+@Embeddable
+public class PlannedActivityBody extends Body {
     private String title;
     private String description;
     private String placeName;
