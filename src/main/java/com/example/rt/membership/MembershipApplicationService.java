@@ -5,13 +5,17 @@ import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class MembershipApplicationService {
     private final MembershipApplicationRepository membershipApplicationRepository;
     private final UserRepository userRepository;
+    private final MembershipApplicationDTOMapper membershipApplicationDTOMapper;
 
-    public MembershipApplication applyMembershipApplication(MembershipApplicationRequest request) {
+    public MembershipApplicationDTO applyMembershipApplication(MembershipApplicationRequest request) {
         if (userRepository.findById(request.getUserId()).isEmpty()) {
             return null;
         }
@@ -24,10 +28,15 @@ public class MembershipApplicationService {
 
         membershipApplicationRepository.save(newMembershipApplication);
 
-        return newMembershipApplication;
+        return membershipApplicationDTOMapper.apply(newMembershipApplication);
     }
 
-    public MembershipApplication acceptMembershipApplication(long id) {
+    public List<MembershipApplicationDTO> getAllMembershipApplications() {
+        return membershipApplicationRepository.findAll()
+                .stream().map(membershipApplicationDTOMapper).collect(Collectors.toList());
+    }
+
+    public MembershipApplicationDTO acceptMembershipApplication(long id) {
         if (membershipApplicationRepository.findById(id).isEmpty()) {
             return null;
         }
@@ -37,6 +46,6 @@ public class MembershipApplicationService {
 
         membershipApplicationRepository.save(membershipApplication);
 
-        return membershipApplication;
+        return membershipApplicationDTOMapper.apply(membershipApplication);
     }
 }
