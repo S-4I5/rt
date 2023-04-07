@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/apply")
+@RequestMapping(value = "/applications")
 public class MembershipApplicationController {
     private final MembershipApplicationService membershipApplicationService;
 
