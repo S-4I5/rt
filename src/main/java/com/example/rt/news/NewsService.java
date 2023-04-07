@@ -1,8 +1,12 @@
 package com.example.rt.news;
 
 import com.example.rt.news.comment.Comment;
+import com.example.rt.news.comment.CommentDTO;
+import com.example.rt.news.comment.CommentDTOMapper;
 import com.example.rt.news.comment.CommentRepository;
 import com.example.rt.news.like.Like;
+import com.example.rt.news.like.LikeDTO;
+import com.example.rt.news.like.LikeDTOMapper;
 import com.example.rt.news.like.LikeRepository;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
@@ -14,7 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +31,8 @@ public class NewsService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
+    private final CommentDTOMapper commentDTOMapper;
+    private final LikeDTOMapper likeDTOMapper;
 
     public List<News> getAllNews(int pageNo, int pageSize) {
         Page<News> newsPage = newsRepository.findAll(PageRequest.of(pageNo, pageSize));
@@ -43,15 +53,17 @@ public class NewsService {
         return newNews;
     }
 
-    public List<Like> getNewsLikes(long id) {
+    public List<LikeDTO> getNewsLikes(long id) {
         if (newsRepository.findById(id).isEmpty()) {
             return null;
         }
 
-        return likeRepository.findAllByNews(newsRepository.findById(id).get());
+        return likeRepository.findAllByNews(newsRepository.findById(id).get())
+                .stream().map(likeDTOMapper)
+                .collect(Collectors.toList());
     }
 
-    public List<Like> addLikeNews(long id) {
+    public LikeDTO addLikeNews(long id) {
         if (newsRepository.findById(id).isEmpty()) {
             return null;
         }
@@ -62,18 +74,20 @@ public class NewsService {
 
         likeRepository.save(newLike);
 
-        return likeRepository.findAllByNews(newsRepository.findById(id).get());
+        return likeDTOMapper.apply(newLike);
     }
 
-    public List<Comment> getNewsComments(long id) {
+    public List<CommentDTO> getNewsComments(long id) {
         if (newsRepository.findById(id).isEmpty()) {
             return null;
         }
 
-        return commentRepository.findAllByNews(newsRepository.findById(id).get());
+        return commentRepository.findAllByNews(newsRepository.findById(id).get())
+                .stream().map(commentDTOMapper)
+                .collect(Collectors.toList());
     }
 
-    public Comment addNewsComments(CommentNewsRequest request, long id) {
+    public CommentDTO addNewsComments(CommentNewsRequest request, long id) {
         if (newsRepository.findById(id).isEmpty() ||
                 userRepository.findByEmail(request.getEmail()).isEmpty()) {
             return null;
@@ -91,7 +105,7 @@ public class NewsService {
 
         commentRepository.save(newComment);
 
-        return newComment;
+        return commentDTOMapper.apply(newComment);
     }
 
 }

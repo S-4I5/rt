@@ -23,7 +23,7 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment parent;
     private String message;
