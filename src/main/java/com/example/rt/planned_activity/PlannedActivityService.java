@@ -25,6 +25,7 @@ public class PlannedActivityService {
         if (optionalUser.isEmpty()) {
             return null;
         }
+
         return plannedActivityRepository.save(
                 PlannedActivity.builder()
                         .title(request.getTitle())
@@ -43,7 +44,9 @@ public class PlannedActivityService {
         if (optionalPlannedActivity.isEmpty()) {
             return null;
         }
+
         optionalPlannedActivity.get().setState(PlannedActivityState.APPROVED);
+
         return plannedActivityRepository.save(optionalPlannedActivity.get());
     }
 }
