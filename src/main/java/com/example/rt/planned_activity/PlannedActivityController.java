@@ -14,8 +14,11 @@ public class PlannedActivityController {
     private final PlannedActivityService plannedActivityService;
 
     @GetMapping()
-    ResponseEntity<List<PlannedActivity>> getPlannedEvents() {
-        return ResponseEntity.ok(plannedActivityService.getPlannedEvents());
+    ResponseEntity<List<PlannedActivity>> getAllPlannedActivities(
+            @RequestParam(value = "pageNo", required = false) int pageNo,
+            @RequestParam(value = "pageSize", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(plannedActivityService.getPlannedActivities(pageNo, pageSize));
     }
 
     @PostMapping()
