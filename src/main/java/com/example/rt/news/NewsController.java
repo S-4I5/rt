@@ -42,11 +42,15 @@ public class NewsController {
     }
 
     @GetMapping("/{id}/comment")
-    public ResponseEntity<List<CommentDTO>> getNewsComments(@PathVariable long id) {
-        return ResponseEntity.ok(newsService.getNewsComments(id));
+    public ResponseEntity<List<CommentDTO>> getNewsComments(
+            @PathVariable long id,
+            @RequestParam(value = "pageNo", required = false) int pageNo,
+            @RequestParam(value = "pageSize", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(newsService.getNewsComments(id, pageNo, pageSize));
     }
 
-    @PostMapping("/{id}/comment")
+    @PostMapping("/{id}/comment") // TODO
     public ResponseEntity<CommentDTO> commentNews(@RequestBody CommentNewsRequest request, @PathVariable long id) {
         return ResponseEntity.ok(newsService.addNewsComments(request, id));
     }

@@ -14,15 +14,11 @@ import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -77,12 +73,14 @@ public class NewsService {
         return likeDTOMapper.apply(newLike);
     }
 
-    public List<CommentDTO> getNewsComments(long id) {
+    public List<CommentDTO> getNewsComments(long id, int pageNo, int pageSize) {
         if (newsRepository.findById(id).isEmpty()) {
             return null;
         }
 
-        return commentRepository.findAllByNews(newsRepository.findById(id).get())
+        Page<Comment> commentDTOPage = commentRepository.findAllByNews(newsRepository.findById(id).get(), PageRequest.of(pageNo, pageSize));
+
+        return commentDTOPage.getContent()
                 .stream().map(commentDTOMapper)
                 .collect(Collectors.toList());
     }
