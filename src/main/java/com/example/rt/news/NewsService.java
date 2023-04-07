@@ -6,9 +6,11 @@ import com.example.rt.news.like.Like;
 import com.example.rt.news.like.LikeRepository;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
-import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,8 +24,10 @@ public class NewsService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
 
-    public List<News> getAllNews() {
-        return newsRepository.findAll();
+    public List<News> getAllNews(int pageNo, int pageSize) {
+        Page<News> newsPage = newsRepository.findAll(PageRequest.of(pageNo, pageSize));
+
+        return newsPage.getContent();
     }
 
     public News postNews(PostNewsRequest request) {
