@@ -1,8 +1,11 @@
 package com.example.rt.membership;
 
 import com.example.rt.membership.requests.MembershipApplicationRequest;
+import com.example.rt.news.comment.Comment;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +34,10 @@ public class MembershipApplicationService {
         return membershipApplicationDTOMapper.apply(newMembershipApplication);
     }
 
-    public List<MembershipApplicationDTO> getAllMembershipApplications() {
-        return membershipApplicationRepository.findAll()
+    public List<MembershipApplicationDTO> getAllMembershipApplications(int pageNo, int pageSize) {
+        Page<MembershipApplication> membershipApplications = membershipApplicationRepository.findAll(PageRequest.of(pageNo, pageSize));
+
+        return membershipApplications.getContent()
                 .stream().map(membershipApplicationDTOMapper).collect(Collectors.toList());
     }
 
