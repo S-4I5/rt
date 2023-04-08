@@ -78,7 +78,10 @@ public class NewsService {
             return null;
         }
 
-        Page<Comment> commentDTOPage = commentRepository.findAllByNews(newsRepository.findById(id).get(), PageRequest.of(pageNo, pageSize));
+        Page<Comment> commentDTOPage = commentRepository.findAllByNews(
+                newsRepository.findById(id).get(),
+                PageRequest.of(pageNo, pageSize)
+        );
 
         return commentDTOPage.getContent()
                 .stream().map(commentDTOMapper)
