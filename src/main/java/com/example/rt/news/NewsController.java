@@ -19,7 +19,7 @@ public class NewsController {
     private final NewsService newsService;
 
     @GetMapping()
-    public ResponseEntity<List<News>> getBasicNews(
+    public ResponseEntity<List<News>> getAllNews(
             @RequestParam(value = "pageNo", required = false) int pageNo,
             @RequestParam(value = "pageSize", required = false) int pageSize
     ) {

@@ -18,16 +18,16 @@ public class PlannedActivityController {
             @RequestParam(value = "pageNo", required = false) int pageNo,
             @RequestParam(value = "pageSize", required = false) int pageSize
     ) {
-        return ResponseEntity.ok(plannedActivityService.getPlannedActivities(pageNo, pageSize));
+        return ResponseEntity.ok(plannedActivityService.getAllPlannedActivities(pageNo, pageSize));
     }
 
     @PostMapping()
-    ResponseEntity<PlannedActivity> suggestEvent(@RequestBody PostPlannedActivityRequest request) {
+    ResponseEntity<PlannedActivity> suggestPlannedActivity(@RequestBody PostPlannedActivityRequest request) {
         return ResponseEntity.ok(plannedActivityService.suggestEvent(request));
     }
 
     @PutMapping("{id}")
-    ResponseEntity<PlannedActivity> acceptEvent(@PathVariable long id) {
+    ResponseEntity<PlannedActivity> acceptPlannedActivity(@PathVariable long id) {
         return ResponseEntity.ok(plannedActivityService.acceptEvent(id));
     }
 }

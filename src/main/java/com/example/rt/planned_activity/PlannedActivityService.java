@@ -19,7 +19,7 @@ public class PlannedActivityService {
     private final UserRepository userRepository;
 
 
-    public List<PlannedActivity> getPlannedActivities(int pageNo, int pageSize) {
+    public List<PlannedActivity> getAllPlannedActivities(int pageNo, int pageSize) {
         Page<PlannedActivity> plannedActivityPage = plannedActivityRepository.findAll(PageRequest.of(pageNo, pageSize));
 
         return plannedActivityPage.getContent();
