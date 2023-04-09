@@ -8,11 +8,16 @@ import java.util.function.Function;
 public class CommentDTOMapper implements Function<Comment, CommentDTO> {
     @Override
     public CommentDTO apply(Comment comment) {
+        long parentId = -1;
+        if(comment.getParent() != null){
+            parentId = comment.getParent().getId();
+        }
+
         return new CommentDTO(
                 comment.getId(),
                 comment.getUser().getId(),
                 comment.getUser().getFirstname() + comment.getUser().getLastname(),
-                comment.getParent().getId(),
+                parentId,
                 comment.getMessage()
         );
     }
