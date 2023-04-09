@@ -1,5 +1,6 @@
 package com.example.rt.news;
 
+import com.example.rt.minio.FileObject;
 import com.example.rt.news.comment.Comment;
 import com.example.rt.news.comment.CommentDTO;
 import com.example.rt.news.like.Like;
@@ -24,6 +25,20 @@ public class NewsController {
             @RequestParam(value = "pageSize", required = false) int pageSize
     ) {
         return ResponseEntity.ok(newsService.getAllNews(pageNo, pageSize));
+    }
+
+    @PostMapping("/post")
+    public void post(
+            @RequestBody FileObject request
+    ) {
+        newsService.upload(request);
+    }
+
+    @GetMapping("/post/{name}")
+    public ResponseEntity<FileObject> post(
+            @PathVariable String name
+    ) {
+        return ResponseEntity.ok(newsService.getFile(name));
     }
 
     @PostMapping()
