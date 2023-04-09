@@ -9,13 +9,16 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/apply")
+@RequestMapping(value = "/applications")
 public class MembershipApplicationController {
     private final MembershipApplicationService membershipApplicationService;
 
     @GetMapping()
-    public ResponseEntity<List<MembershipApplicationDTO>> getAllMembershipApplications() {
-        return ResponseEntity.ok(membershipApplicationService.getAllMembershipApplications());
+    public ResponseEntity<List<MembershipApplicationDTO>> getAllMembershipApplications(
+            @RequestParam(value = "pageNo", required = false) int pageNo,
+            @RequestParam(value = "pageSize", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(membershipApplicationService.getAllMembershipApplications(pageNo, pageSize));
     }
 
     @PostMapping()

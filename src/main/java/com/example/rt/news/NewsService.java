@@ -10,17 +10,15 @@ import com.example.rt.news.like.LikeDTOMapper;
 import com.example.rt.news.like.LikeRepository;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
-import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -32,8 +30,10 @@ public class NewsService {
     private final CommentDTOMapper commentDTOMapper;
     private final LikeDTOMapper likeDTOMapper;
 
-    public List<News> getAllNews() {
-        return newsRepository.findAll();
+    public List<News> getAllNews(int pageNo, int pageSize) {
+        Page<News> newsPage = newsRepository.findAll(PageRequest.of(pageNo, pageSize));
+
+        return newsPage.getContent();
     }
 
     public News postNews(PostNewsRequest request) {
@@ -73,12 +73,17 @@ public class NewsService {
         return likeDTOMapper.apply(newLike);
     }
 
-    public List<CommentDTO> getNewsComments(long id) {
+    public List<CommentDTO> getNewsComments(long id, int pageNo, int pageSize) {
         if (newsRepository.findById(id).isEmpty()) {
             return null;
         }
 
-        return commentRepository.findAllByNews(newsRepository.findById(id).get())
+        Page<Comment> commentDTOPage = commentRepository.findAllByNews(
+                newsRepository.findById(id).get(),
+                PageRequest.of(pageNo, pageSize)
+        );
+
+        return commentDTOPage.getContent()
                 .stream().map(commentDTOMapper)
                 .collect(Collectors.toList());
     }

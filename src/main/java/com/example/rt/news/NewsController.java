@@ -19,8 +19,11 @@ public class NewsController {
     private final NewsService newsService;
 
     @GetMapping()
-    public ResponseEntity<List<News>> getBasicNews() {
-        return ResponseEntity.ok(newsService.getAllNews());
+    public ResponseEntity<List<News>> getAllNews(
+            @RequestParam(value = "pageNo", required = false) int pageNo,
+            @RequestParam(value = "pageSize", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(newsService.getAllNews(pageNo, pageSize));
     }
 
     @PostMapping()
@@ -28,22 +31,26 @@ public class NewsController {
         return ResponseEntity.ok(newsService.postNews(request));
     }
 
-    @GetMapping("/{id}/like")
+    @GetMapping("/{id}/likes")
     public ResponseEntity<List<LikeDTO>> getNewsLikes(@PathVariable long id) {
         return ResponseEntity.ok(newsService.getNewsLikes(id));
     }
 
-    @PostMapping("/{id}/like")
+    @PostMapping("/{id}/likes")
     public ResponseEntity<LikeDTO> likeNews(@PathVariable long id) {
         return ResponseEntity.ok(newsService.addLikeNews(id));
     }
 
-    @GetMapping("/{id}/comment")
-    public ResponseEntity<List<CommentDTO>> getNewsComments(@PathVariable long id) {
-        return ResponseEntity.ok(newsService.getNewsComments(id));
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentDTO>> getNewsComments(
+            @PathVariable long id,
+            @RequestParam(value = "pageNo", required = false) int pageNo,
+            @RequestParam(value = "pageSize", required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(newsService.getNewsComments(id, pageNo, pageSize));
     }
 
-    @PostMapping("/{id}/comment")
+    @PostMapping("/{id}/comments")
     public ResponseEntity<CommentDTO> commentNews(@RequestBody CommentNewsRequest request, @PathVariable long id) {
         return ResponseEntity.ok(newsService.addNewsComments(request, id));
     }

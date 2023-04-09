@@ -1,9 +1,12 @@
 package com.example.rt.planned_activity;
 
 import com.example.rt.membership.MembershipApplicationState;
+import com.example.rt.news.News;
 import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +19,10 @@ public class PlannedActivityService {
     private final UserRepository userRepository;
 
 
-    public List<PlannedActivity> getPlannedEvents() {
-        return plannedActivityRepository.findAll();
+    public List<PlannedActivity> getAllPlannedActivities(int pageNo, int pageSize) {
+        Page<PlannedActivity> plannedActivityPage = plannedActivityRepository.findAll(PageRequest.of(pageNo, pageSize));
+
+        return plannedActivityPage.getContent();
     }
 
     public PlannedActivity suggestEvent(PostPlannedActivityRequest request) {
