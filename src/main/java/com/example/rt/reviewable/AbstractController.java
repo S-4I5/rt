@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class AbstractController<B extends AbstractBody, R extends AbstractRepository<B>, E extends AbstractEntity<B>> {
-    private final GenericService<B, R, E> service;
+public class AbstractController<B extends AbstractBody> {
+    private final GenericService<B> service;
 
     @GetMapping()
     public ResponseEntity<List<AbstractDTO<B>>> getAllReviewable(

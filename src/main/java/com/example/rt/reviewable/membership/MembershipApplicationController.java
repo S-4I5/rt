@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/applications")
-public class MembershipApplicationController extends AbstractController<MembershipApplicationBody, MembershipApplicationRepository, MembershipApplication> {
-    public MembershipApplicationController(GenericService<MembershipApplicationBody, MembershipApplicationRepository, MembershipApplication> service) {
+public class MembershipApplicationController extends AbstractController<MembershipApplicationBody> {
+    public MembershipApplicationController(GenericService<MembershipApplicationBody> service) {
         super(service);
     }
 }

@@ -13,15 +13,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Service
 @RequiredArgsConstructor
-public class GenericService<B extends AbstractBody, R extends AbstractRepository<B>, E extends AbstractEntity<B>> {
-    private final R repository;
+public class GenericService<B extends AbstractBody> {
+    private final AbstractRepository<B> repository;
     private final UserRepository userRepository;
     private final AbstractDTOMapper<B> dtoMapper;
 
     public List<AbstractDTO<B>> getAllReviewable(int pageNo, int pageSize) {
-        Page<E> reviewablesPage = (Page<E>) repository.findAll(
+        Page<AbstractEntity<B>> reviewablesPage = repository.findAll(
                 PageRequest.of(pageNo, pageSize)
         );
 
