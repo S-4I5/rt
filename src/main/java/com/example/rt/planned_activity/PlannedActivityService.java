@@ -1,7 +1,5 @@
 package com.example.rt.planned_activity;
 
-import com.example.rt.membership.MembershipApplicationState;
-import com.example.rt.news.News;
 import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.RequiredArgsConstructor;

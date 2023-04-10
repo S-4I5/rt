@@ -1,6 +1,5 @@
 package com.example.rt.planned_activity;
 
-import com.example.rt.membership.MembershipApplication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
