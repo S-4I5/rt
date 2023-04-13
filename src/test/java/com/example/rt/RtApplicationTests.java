@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RtApplicationTests {
     private final MockMvc mockMvc;
 
+    private final String email = "sus331@gmail.com";
     private String token;
 
     @Autowired
@@ -26,19 +27,19 @@ class RtApplicationTests {
     }
 
     private void register() throws Exception {
-        String email = "sus331@gmail.com";
+        var body = "{ \"email\": \"" + email + "\", \"password\": \"1234566\" }";
 
         var registerRequest = mockMvc.perform(
                         post("/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"email\": \"" + email + "\", \"password\": \"1234566\" }"))
+                                .content(body))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         token = JsonPath.read(registerRequest.getResponse().getContentAsString(), "$.token");
     }
 
-    private void postCheckNews(int idShouldCreateWith) throws Exception {
+    private void postCheckNews(int expectedIdOfCreatedNews) throws Exception {
         mockMvc.perform(
                         post("/news")
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -53,7 +54,7 @@ class RtApplicationTests {
                                         """
                                 ))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(idShouldCreateWith));
+                .andExpect(jsonPath("$.id").value(expectedIdOfCreatedNews));
     }
 
     @Test
@@ -71,13 +72,13 @@ class RtApplicationTests {
                 .andExpect(jsonPath("$[0].id").value("2"));
     }
 
-    private void checkFirstPlannedActivity(String requiredState) throws Exception {
+    private void checkFirstPlannedActivity(String expectedState) throws Exception {
         mockMvc.perform(
-                        get("/planned-activities?pageSize=1&pageNo=0")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                                .contentType(MediaType.APPLICATION_JSON))
+                get("/planned-activities?pageSize=1&pageNo=0")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].state").value(requiredState));
+                .andExpect(jsonPath("$[0].state").value(expectedState));
     }
 
     @Test
@@ -85,21 +86,21 @@ class RtApplicationTests {
         register();
 
         mockMvc.perform(
-                        post("/planned-activities")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
-                                            {
-                                                "title": "titl",
-                                                "description": "desc",
-                                                "placeName": "place",
-                                                "photo": "photo",
-                                                "plannedDate": "2022-04-02",
-                                                "authorId": 1
-                                            }
-                                        """
-                                ))
+                post("/planned-activities")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                    {
+                                        "title": "titl",
+                                        "description": "desc",
+                                        "placeName": "place",
+                                        "photo": "photo",
+                                        "plannedDate": "2022-04-02",
+                                        "authorId": 1
+                                    }
+                                """
+                        ))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1));
 
@@ -113,5 +114,29 @@ class RtApplicationTests {
         checkFirstPlannedActivity("APPROVED");
     }
 
-    
+    private void postComment(int parentId) throws Exception {
+        var body = "{\"email\": \"" + email + "\", \"message\": \"fuck\", \"parentId\": \"" + parentId + "\"}";
+        mockMvc.perform(
+                post("/news/1/comments")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body));
+    }
+
+    @Test
+    public void testComments() throws Exception {
+        register();
+
+        postCheckNews(1);
+
+        postComment(-1);
+        postComment(1);
+
+        mockMvc.perform(
+                get("/news/1/comments?pageSize=2&pageNo=0")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[1].parent").value(1));
+    }
 }
