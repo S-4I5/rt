@@ -205,6 +205,7 @@ class RtApplicationTests {
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andExpect(jsonPath("$[0].userId").value(1))
+                .andExpect(jsonPath("$[1].userId").value(2));
     }
 }
