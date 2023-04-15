@@ -60,8 +60,8 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
-    public LikeDTO addLikeNews(long id, String username) {
-        if (newsRepository.findById(id).isEmpty()) {
+    public LikeDTO addLikeNews(long newsId, String username) {
+        if (newsRepository.findById(newsId).isEmpty()) {
             return null;
         }
 
@@ -70,7 +70,7 @@ public class NewsService {
         }
 
         var newLike = Like.builder()
-                .news(newsRepository.findById(id).get())
+                .news(newsRepository.findById(newsId).get())
                 .user(userRepository.findByEmail(username).get())
                 .build();
 
@@ -94,16 +94,16 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDTO addNewsComments(CommentNewsRequest request, long id) {
-        if (newsRepository.findById(id).isEmpty() ||
-                userRepository.findByEmail(request.getEmail()).isEmpty()) {
+    public CommentDTO addNewsComments(CommentNewsRequest request, long newsId, String username) {
+        if (newsRepository.findById(newsId).isEmpty() ||
+                userRepository.findByEmail(username).isEmpty()) {
             return null;
         }
 
         var newComment = Comment.builder()
                 .message(request.getMessage())
-                .user(userRepository.findByEmail(request.getEmail()).get())
-                .news(newsRepository.findById(id).get())
+                .user(userRepository.findByEmail(username).get())
+                .news(newsRepository.findById(newsId).get())
                 .build();
 
         if(commentRepository.findById(request.getParentId()).isPresent()){

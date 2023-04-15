@@ -165,11 +165,16 @@ class RtApplicationTests {
 
     @Test
     public void testComments() throws Exception {
+        email = "sus1@gmail.com";
         register();
 
         postCheckNews(1);
 
         postComment(-1);
+
+        email = "sus2@gmail.com";
+        register();
+
         postComment(1);
 
         mockMvc.perform(
@@ -177,7 +182,10 @@ class RtApplicationTests {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[1].parent").value(1));
+                .andExpect(jsonPath("$[1].parent").value(1))
+                .andExpect(jsonPath("$[0].authorId").value(1))
+                .andExpect(jsonPath("$[1].authorId").value(2))
+                .andDo(print());
     }
 
     private void likeFirstNews() throws Exception {

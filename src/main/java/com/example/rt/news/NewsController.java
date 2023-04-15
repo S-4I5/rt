@@ -50,8 +50,12 @@ public class NewsController {
     }
 
     @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentDTO> commentNews(@RequestBody CommentNewsRequest request, @PathVariable long id) {
-        return ResponseEntity.ok(newsService.addNewsComments(request, id));
+    public ResponseEntity<CommentDTO> commentNews(
+            @RequestBody CommentNewsRequest request,
+            @PathVariable long id,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(newsService.addNewsComments(request, id, authentication.getName()));
     }
 }
 
