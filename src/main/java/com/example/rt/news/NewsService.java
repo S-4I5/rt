@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,19 +60,22 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
-    public LikeDTO addLikeNews(long id) {
+    public LikeDTO addLikeNews(long id, String username) {
         if (newsRepository.findById(id).isEmpty()) {
+            return null;
+        }
+
+        if (userRepository.findByEmail(username).isEmpty()) {
             return null;
         }
 
         var newLike = Like.builder()
                 .news(newsRepository.findById(id).get())
-                .user(userRepository.findById(1L).get())
+                .user(userRepository.findByEmail(username).get())
                 .build();
 
         likeRepository.save(newLike);
 
-        System.out.println("try like " + newLike);
         return likeDTOMapper.apply(newLike);
     }
 
