@@ -19,6 +19,7 @@ class RtApplicationTests {
     private final MockMvc mockMvc;
 
     private final String email = "sus331@gmail.com";
+
     private String token;
 
     @Autowired
@@ -112,6 +113,44 @@ class RtApplicationTests {
                                 .contentType(MediaType.APPLICATION_JSON));
 
         checkFirstPlannedActivity("APPROVED");
+    }
+
+    private void checkFirstMembership(String expectedState) throws Exception {
+        mockMvc.perform(
+                        get("/applications?pageSize=1&pageNo=0")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].state").value(expectedState));
+    }
+
+    @Test
+    public void testMembership() throws Exception {
+        register();
+
+        mockMvc.perform(
+                        post("/applications")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                            {
+                                                "photo": "a.png",
+                                                "userId": 1
+                                            }
+                                        """
+                                ))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1));
+
+        checkFirstMembership("IN_REVIEWING");
+
+        mockMvc.perform(
+                post("/applications/1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        checkFirstMembership("APPROVED");
     }
 
     private void postComment(int parentId) throws Exception {
