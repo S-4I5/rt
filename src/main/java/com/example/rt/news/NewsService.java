@@ -66,10 +66,12 @@ public class NewsService {
 
         var newLike = Like.builder()
                 .news(newsRepository.findById(id).get())
+                .user(userRepository.findById(1L).get())
                 .build();
 
         likeRepository.save(newLike);
 
+        System.out.println("try like " + newLike);
         return likeDTOMapper.apply(newLike);
     }
 

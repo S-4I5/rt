@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RtApplicationTests {
     private final MockMvc mockMvc;
 
-    private final String email = "sus331@gmail.com";
+    private String email = "sus331@gmail.com";
 
     private String token;
 
@@ -177,5 +178,33 @@ class RtApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[1].parent").value(1));
+    }
+
+    private void likeFirstNews() throws Exception {
+        mockMvc.perform(
+                post("/news/1/likes")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON));
+    }
+    @Test
+    public void testLikes() throws Exception {
+        email = "sus1@gmail.com";
+        register();
+
+        postCheckNews(1);
+
+        likeFirstNews();
+
+        email = "sus2@gmail.com";
+        register();
+
+        likeFirstNews();
+
+        mockMvc.perform(
+                        get("/news/1/likes")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
     }
 }
