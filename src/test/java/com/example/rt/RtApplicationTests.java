@@ -143,7 +143,7 @@ class RtApplicationTests {
         checkFirstMembership("IN_REVIEWING");
 
         mockMvc.perform(
-                post("/applications/1")
+                put("/applications/1")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON));
 

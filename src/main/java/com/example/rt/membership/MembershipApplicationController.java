@@ -27,7 +27,7 @@ public class MembershipApplicationController {
         return ResponseEntity.ok(membershipApplicationService.applyMembershipApplication(request, authentication.getName()));
     }
 
-    @PostMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<MembershipApplicationDTO> acceptMembershipApplication(@PathVariable long id) {
         return ResponseEntity.ok(membershipApplicationService.acceptMembershipApplication(id));
     }
