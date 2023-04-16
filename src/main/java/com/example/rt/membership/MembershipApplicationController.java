@@ -3,6 +3,7 @@ package com.example.rt.membership;
 import com.example.rt.membership.requests.MembershipApplicationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class MembershipApplicationController {
     }
 
     @PostMapping()
-    public ResponseEntity<MembershipApplicationDTO> applyMembershipApplication(@RequestBody MembershipApplicationRequest request) {
-        return ResponseEntity.ok(membershipApplicationService.applyMembershipApplication(request));
+    public ResponseEntity<MembershipApplicationDTO> applyMembershipApplication(@RequestBody MembershipApplicationRequest request, Authentication authentication) {
+        return ResponseEntity.ok(membershipApplicationService.applyMembershipApplication(request, authentication.getName()));
     }
 
     @PostMapping("{id}")

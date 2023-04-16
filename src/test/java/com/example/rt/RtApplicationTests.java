@@ -134,10 +134,7 @@ class RtApplicationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
                                         """
-                                            {
-                                                "photo": "a.png",
-                                                "userId": 1
-                                            }
+                                            "photo": "a.png"
                                         """
                                 ))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
