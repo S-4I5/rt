@@ -25,8 +25,8 @@ public class PlannedActivityService {
         return plannedActivityPage.getContent();
     }
 
-    public PlannedActivity suggestEvent(PostPlannedActivityRequest request) {
-        Optional<User> optionalUser = userRepository.findById(request.getAuthorId());
+    public PlannedActivity suggestEvent(PostPlannedActivityRequest request, String username) {
+        Optional<User> optionalUser = userRepository.findByEmail(username);
         if (optionalUser.isEmpty()) {
             return null;
         }

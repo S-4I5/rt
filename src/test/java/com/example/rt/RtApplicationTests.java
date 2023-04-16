@@ -98,8 +98,7 @@ class RtApplicationTests {
                                         "description": "desc",
                                         "placeName": "place",
                                         "photo": "photo",
-                                        "plannedDate": "2022-04-02",
-                                        "authorId": 1
+                                        "plannedDate": "2022-04-02"
                                     }
                                 """
                         ))
