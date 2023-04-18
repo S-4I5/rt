@@ -1,13 +1,12 @@
 package com.example.rt.news;
 
-import com.example.rt.news.comment.Comment;
 import com.example.rt.news.comment.CommentDTO;
-import com.example.rt.news.like.Like;
 import com.example.rt.news.like.LikeDTO;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +36,8 @@ public class NewsController {
     }
 
     @PostMapping("/{id}/likes")
-    public ResponseEntity<LikeDTO> likeNews(@PathVariable long id) {
-        return ResponseEntity.ok(newsService.addLikeNews(id));
+    public ResponseEntity<LikeDTO> likeNews(@PathVariable long id, Authentication authentication) {
+        return ResponseEntity.ok(newsService.addLikeNews(id, authentication.getName()));
     }
 
     @GetMapping("/{id}/comments")
@@ -51,8 +50,12 @@ public class NewsController {
     }
 
     @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentDTO> commentNews(@RequestBody CommentNewsRequest request, @PathVariable long id) {
-        return ResponseEntity.ok(newsService.addNewsComments(request, id));
+    public ResponseEntity<CommentDTO> commentNews(
+            @RequestBody CommentNewsRequest request,
+            @PathVariable long id,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(newsService.addNewsComments(request, id, authentication.getName()));
     }
 }
 

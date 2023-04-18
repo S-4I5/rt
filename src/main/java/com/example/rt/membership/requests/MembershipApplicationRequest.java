@@ -7,5 +7,4 @@ import lombok.Data;
 @AllArgsConstructor
 public class MembershipApplicationRequest {
     private String photo;
-    private long userId;
 }
