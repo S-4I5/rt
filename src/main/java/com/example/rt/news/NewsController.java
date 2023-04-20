@@ -30,11 +30,6 @@ public class NewsController {
         return ResponseEntity.ok(newsService.postNews(request));
     }
 
-    @GetMapping("/{id}/likes")
-    public ResponseEntity<List<LikeDTO>> getNewsLikes(@PathVariable long id) {
-        return ResponseEntity.ok(newsService.getNewsLikes(id));
-    }
-
     @PostMapping("/{id}/likes")
     public ResponseEntity<LikeDTO> likeNews(@PathVariable long id, Authentication authentication) {
         return ResponseEntity.ok(newsService.addLikeNews(id, authentication.getName()));
