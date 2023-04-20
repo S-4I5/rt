@@ -37,6 +37,16 @@ public class NewsService {
         return newsPage.getContent();
     }
 
+    public List<LikeDTO> getNewsLikes(long id) {
+        if (newsRepository.findById(id).isEmpty()) {
+            return null;
+        }
+
+        return likeRepository.findAllByNews(newsRepository.findById(id).get())
+                .stream().map(likeDTOMapper)
+                .collect(Collectors.toList());
+    }
+
     public News postNews(PostNewsRequest request) {
         var newNews = News.builder()
                 .title(request.getTitle())
