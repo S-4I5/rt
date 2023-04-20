@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/file")
+@RequestMapping(value = "/files")
 public class S3Controller {
     private final MinioService minioService;
 
