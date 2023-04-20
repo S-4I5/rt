@@ -1,8 +1,5 @@
 package com.example.rt.news;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.example.rt.minio.FileObject;
-import com.example.rt.minio.MinioService;
 import com.example.rt.news.comment.Comment;
 import com.example.rt.news.comment.CommentDTO;
 import com.example.rt.news.comment.CommentDTOMapper;
@@ -14,16 +11,11 @@ import com.example.rt.news.like.LikeRepository;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
 import com.example.rt.user.UserRepository;
-import io.minio.MinioClient;
-import io.minio.errors.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +29,6 @@ public class NewsService {
     private final UserRepository userRepository;
     private final CommentDTOMapper commentDTOMapper;
     private final LikeDTOMapper likeDTOMapper;
-    private final MinioService minioService;
 
     public List<News> getAllNews(int pageNo, int pageSize) {
         Page<News> newsPage = newsRepository.findAll(PageRequest.of(pageNo, pageSize));
@@ -45,12 +36,14 @@ public class NewsService {
         return newsPage.getContent();
     }
 
-    public void upload(FileObject fileObject){
-        minioService.uploadFile(fileObject);
-    }
+    public List<LikeDTO> getNewsLikes(long id) {
+        if (newsRepository.findById(id).isEmpty()) {
+            return null;
+        }
 
-    public FileObject getFile(String name){
-        return minioService.getFile(name);
+        return likeRepository.findAllByNews(newsRepository.findById(id).get())
+                .stream().map(likeDTOMapper)
+                .collect(Collectors.toList());
     }
 
     public News postNews(PostNewsRequest request) {
@@ -64,16 +57,6 @@ public class NewsService {
         newsRepository.save(newNews);
 
         return newNews;
-    }
-
-    public List<LikeDTO> getNewsLikes(long id) {
-        if (newsRepository.findById(id).isEmpty()) {
-            return null;
-        }
-
-        return likeRepository.findAllByNews(newsRepository.findById(id).get())
-                .stream().map(likeDTOMapper)
-                .collect(Collectors.toList());
     }
 
     public LikeDTO addLikeNews(long id) {
