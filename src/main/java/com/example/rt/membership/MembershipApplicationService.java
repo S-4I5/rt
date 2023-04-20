@@ -18,14 +18,14 @@ public class MembershipApplicationService {
     private final UserRepository userRepository;
     private final MembershipApplicationDTOMapper membershipApplicationDTOMapper;
 
-    public MembershipApplicationDTO applyMembershipApplication(MembershipApplicationRequest request) {
-        if (userRepository.findById(request.getUserId()).isEmpty()) {
+    public MembershipApplicationDTO applyMembershipApplication(MembershipApplicationRequest request, String username) {
+        if (userRepository.findByEmail(username).isEmpty()) {
             return null;
         }
 
         MembershipApplication newMembershipApplication = MembershipApplication.builder()
                 .photo(request.getPhoto())
-                .user(userRepository.findById(request.getUserId()).get())
+                .user(userRepository.findByEmail(username).get())
                 .state(MembershipApplicationState.IN_REVIEWING)
                 .build();
 

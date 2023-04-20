@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,13 +60,28 @@ public class NewsService {
         return newNews;
     }
 
-    public LikeDTO addLikeNews(long id) {
+    public List<LikeDTO> getNewsLikes(long id) {
         if (newsRepository.findById(id).isEmpty()) {
             return null;
         }
 
+        return likeRepository.findAllByNews(newsRepository.findById(id).get())
+                .stream().map(likeDTOMapper)
+                .collect(Collectors.toList());
+    }
+
+    public LikeDTO addLikeNews(long newsId, String username) {
+        if (newsRepository.findById(newsId).isEmpty()) {
+            return null;
+        }
+
+        if (userRepository.findByEmail(username).isEmpty()) {
+            return null;
+        }
+
         var newLike = Like.builder()
-                .news(newsRepository.findById(id).get())
+                .news(newsRepository.findById(newsId).get())
+                .user(userRepository.findByEmail(username).get())
                 .build();
 
         likeRepository.save(newLike);
@@ -88,16 +104,16 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDTO addNewsComments(CommentNewsRequest request, long id) {
-        if (newsRepository.findById(id).isEmpty() ||
-                userRepository.findByEmail(request.getEmail()).isEmpty()) {
+    public CommentDTO addNewsComments(CommentNewsRequest request, long newsId, String username) {
+        if (newsRepository.findById(newsId).isEmpty() ||
+                userRepository.findByEmail(username).isEmpty()) {
             return null;
         }
 
         var newComment = Comment.builder()
                 .message(request.getMessage())
-                .user(userRepository.findByEmail(request.getEmail()).get())
-                .news(newsRepository.findById(id).get())
+                .user(userRepository.findByEmail(username).get())
+                .news(newsRepository.findById(newsId).get())
                 .build();
 
         if(commentRepository.findById(request.getParentId()).isPresent()){

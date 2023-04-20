@@ -3,6 +3,7 @@ package com.example.rt.planned_activity;
 import com.example.rt.membership.MembershipApplication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class PlannedActivityController {
     }
 
     @PostMapping()
-    ResponseEntity<PlannedActivity> suggestPlannedActivity(@RequestBody PostPlannedActivityRequest request) {
-        return ResponseEntity.ok(plannedActivityService.suggestEvent(request));
+    ResponseEntity<PlannedActivity> suggestPlannedActivity(@RequestBody PostPlannedActivityRequest request, Authentication authentication) {
+        return ResponseEntity.ok(plannedActivityService.suggestEvent(request, authentication.getName()));
     }
 
     @PutMapping("{id}")

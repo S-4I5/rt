@@ -11,5 +11,4 @@ public class PostPlannedActivityRequest {
     private String placeName;
     private String photo;
     private Date plannedDate;
-    private long authorId;
 }
