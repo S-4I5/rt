@@ -13,3 +13,11 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+  mail:
+    host: smtp.mail.ru
+    username: rt.auth@mail.ru
+    password: KsgBwwVd6haQVCbTVHjy
+    port: 465
+    protocol: smtps
+mail:
+  debug: true

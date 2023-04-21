@@ -41,6 +41,8 @@ public class User implements UserDetails {
     private Date birthday_date;
     private boolean isMember;
     private long balance;
+    private boolean isEnabled;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -68,6 +70,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 }

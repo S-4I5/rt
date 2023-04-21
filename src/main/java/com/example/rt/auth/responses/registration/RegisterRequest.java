@@ -1,4 +1,4 @@
-package com.example.rt.auth.requests;
+package com.example.rt.auth.responses.registration;
 
 import lombok.*;
 

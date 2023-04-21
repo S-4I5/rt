@@ -1,5 +1,6 @@
 package com.example.rt.s3;
 
+import com.example.rt.s3.responces.FilePostResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,10 @@ public class S3Controller {
     private final MinioService minioService;
 
     @PostMapping("/post")
-    public void post(
+    public ResponseEntity<FilePostResponse> post(
             @RequestParam(value = "file") MultipartFile file
     ) {
-        minioService.uploadFile(file);
+        return ResponseEntity.ok(new FilePostResponse(minioService.uploadFile(file)));
     }
 
     @GetMapping("/download/{fileName}")
