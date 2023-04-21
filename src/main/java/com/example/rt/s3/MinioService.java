@@ -1,4 +1,5 @@
 package com.example.rt.s3;
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -18,10 +19,11 @@ public class MinioService {
     private final AmazonS3 minioClient;
 
     @SneakyThrows
-    public void uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = 2 + "_" + file.getOriginalFilename();
         minioClient.putObject(new PutObjectRequest("somebucketname", fileName, fileObj));
+        return fileName;
     }
 
     @SneakyThrows
