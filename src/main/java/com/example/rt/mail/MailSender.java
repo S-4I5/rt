@@ -17,7 +17,7 @@ public class MailSender {
     @Value("${spring.mail.username}")
     private String username;
 
-    public void sendActivationEmail(EmailActivationCode emailActivationCode){
+    public void sendActivationEmail(EmailActivationCode emailActivationCode) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
         mailMessage.setFrom(username);
@@ -27,7 +27,7 @@ public class MailSender {
         mailMessage.setSubject(EMAIL_SUBJECT);
 
         String AUTH_MESSAGE = "Hello, %s! \n" +
-                "Welcome to RT. Please, visit next link: http://localhost:8080/activate/%s for activate your account.";
+                "Welcome to RT. Your activation code is %s";
         mailMessage.setText(String.format(
                 AUTH_MESSAGE,
                 emailActivationCode.user.getFirstname() + " " + emailActivationCode.user.getLastname(),
@@ -36,6 +36,4 @@ public class MailSender {
 
         mailSender.send(mailMessage);
     }
-
-
 }
