@@ -81,6 +81,7 @@ public class AuthenticationService {
 
         return AuthenticationSuccedResponse.builder()
                 .token(jwtToken)
+                .id(emailActivationCode.get().user.getId())
                 .build();
     }
 
@@ -100,6 +101,7 @@ public class AuthenticationService {
 
         return AuthenticationSuccedResponse.builder()
                 .token(jwtToken)
+                .id(user.getId())
                 .build();
     }
 
