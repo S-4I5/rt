@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3Controller {
     private final MinioService minioService;
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<FilePostResponse> post(
             @RequestParam(value = "file") MultipartFile file
     ) {

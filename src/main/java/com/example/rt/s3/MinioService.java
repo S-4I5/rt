@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class MinioService {
     @SneakyThrows
     public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file);
-        String fileName = 2 + "_" + file.getOriginalFilename();
+        String fileName = System.currentTimeMillis() + new Random().nextInt() + "_" + file.getOriginalFilename();
 
         minioClient.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
 

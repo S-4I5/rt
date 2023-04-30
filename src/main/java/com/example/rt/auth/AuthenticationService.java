@@ -79,8 +79,6 @@ public class AuthenticationService {
 
         emailActivationCodeRepository.delete(emailActivationCode.get());
 
-        System.out.println("XDD" + emailActivationCodeRepository.count());
-
         return AuthenticationSuccedResponse.builder()
                 .token(jwtToken)
                 .build();

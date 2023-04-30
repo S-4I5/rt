@@ -1,11 +1,10 @@
 package com.example.rt.mail;
 
 import com.example.rt.auth.email_activation.EmailActivationCode;
-import lombok.AllArgsConstructor;
+import com.example.rt.feedback.PostFeedbackRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -16,23 +15,52 @@ public class MailSender {
     private final JavaMailSender mailSender;
     @Value("${spring.mail.username}")
     private String username;
+    @Value("${spring.mail.feedback-mail}")
+    private String feedbackMail;
 
-    public void sendActivationEmail(EmailActivationCode emailActivationCode) {
+    private SimpleMailMessage generateSimpleMailMessage(
+            String from,
+            String to,
+            String emailSubject,
+            String text
+    ){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        mailMessage.setFrom(username);
-        mailMessage.setTo(emailActivationCode.getUser().getEmail());
+        mailMessage.setFrom(from);
+        mailMessage.setTo(to);
+        mailMessage.setSubject(emailSubject);
+        mailMessage.setText(text);
+
+        return mailMessage;
+    }
+
+    public void sendActivationEmail(EmailActivationCode emailActivationCode) {
 
         String EMAIL_SUBJECT = "Email activation";
-        mailMessage.setSubject(EMAIL_SUBJECT);
 
-        String AUTH_MESSAGE = "Hello, %s! \n" +
-                "Welcome to RT. Your activation code is %s";
-        mailMessage.setText(String.format(
-                AUTH_MESSAGE,
+        String AUTH_MESSAGE = String.format("Hello, %s! \n" +
+                        "Welcome to RT. Your activation code is %s",
                 emailActivationCode.user.getFirstname() + " " + emailActivationCode.user.getLastname(),
-                emailActivationCode.code
-        ));
+                emailActivationCode.code);
+
+        SimpleMailMessage mailMessage = generateSimpleMailMessage(
+                username,
+                emailActivationCode.getUser().getEmail(),
+                EMAIL_SUBJECT,
+                AUTH_MESSAGE
+        );
+
+        mailSender.send(mailMessage);
+    }
+
+    public void sendFeedbackEmail(PostFeedbackRequest postFeedbackRequest, Authentication authentication) {
+
+        SimpleMailMessage mailMessage = generateSimpleMailMessage(
+                username,
+                feedbackMail,
+                postFeedbackRequest.topic() + " from " + authentication.getName(),
+                postFeedbackRequest.text()
+        );
 
         mailSender.send(mailMessage);
     }
