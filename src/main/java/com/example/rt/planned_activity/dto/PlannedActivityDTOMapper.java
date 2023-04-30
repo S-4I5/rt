@@ -1,5 +1,6 @@
-package com.example.rt.planned_activity;
+package com.example.rt.planned_activity.dto;
 
+import com.example.rt.planned_activity.PlannedActivity;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

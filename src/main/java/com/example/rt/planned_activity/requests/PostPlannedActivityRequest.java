@@ -1,4 +1,4 @@
-package com.example.rt.planned_activity;
+package com.example.rt.planned_activity.requests;
 
 import lombok.Data;
 

@@ -1,5 +1,6 @@
-package com.example.rt.membership;
+package com.example.rt.membership.dto;
 
+import com.example.rt.membership.MembershipApplicationState;
 import com.example.rt.user.User;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

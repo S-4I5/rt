@@ -26,4 +26,5 @@ s3:
   secret-key: minio123
   signing-region: null
   service-endpoint: http://localhost:9000
+  bucket-name: somebucket
 

@@ -4,7 +4,7 @@ import com.example.rt.news.comment.CommentDTO;
 import com.example.rt.news.like.LikeDTO;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/news")
 public class NewsController {
     private final NewsService newsService;

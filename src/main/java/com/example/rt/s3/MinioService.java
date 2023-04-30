@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,32 +18,41 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MinioService {
     private final AmazonS3 minioClient;
+    @Value("${s3.bucket-name}")
+    private String bucketName;
+
 
     @SneakyThrows
     public String uploadFile(MultipartFile file) {
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = 2 + "_" + file.getOriginalFilename();
-        minioClient.putObject(new PutObjectRequest("somebucketname", fileName, fileObj));
+
+        minioClient.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+
         return fileName;
     }
 
     @SneakyThrows
     private File convertMultiPartFileToFile(MultipartFile file) {
         File convertedFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
-        } catch (IOException e) {}
+        } catch (IOException ignored) {}
+
         return convertedFile;
     }
 
     public byte[] downloadFile(String fileName) {
-        S3Object s3Object = minioClient.getObject("somebucketname", fileName);
+        S3Object s3Object = minioClient.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
+
         try {
             return IOUtils.toByteArray(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 }

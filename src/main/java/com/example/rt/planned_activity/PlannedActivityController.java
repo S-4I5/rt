@@ -1,6 +1,7 @@
 package com.example.rt.planned_activity;
 
-import com.example.rt.membership.MembershipApplication;
+import com.example.rt.planned_activity.dto.PlannedActivityDTO;
+import com.example.rt.planned_activity.requests.PostPlannedActivityRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

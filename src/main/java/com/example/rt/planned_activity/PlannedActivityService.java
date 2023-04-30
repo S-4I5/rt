@@ -1,17 +1,16 @@
 package com.example.rt.planned_activity;
 
-import com.example.rt.membership.MembershipApplicationState;
-import com.example.rt.news.News;
+import com.example.rt.planned_activity.dto.PlannedActivityDTO;
+import com.example.rt.planned_activity.dto.PlannedActivityDTOMapper;
+import com.example.rt.planned_activity.requests.PostPlannedActivityRequest;
 import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,6 @@ public class PlannedActivityService {
     private final PlannedActivityRepository plannedActivityRepository;
     private final UserRepository userRepository;
     private final PlannedActivityDTOMapper plannedActivityDTOMapper;
-
 
     public List<PlannedActivityDTO> getAllPlannedActivities(int pageNo, int pageSize) {
         return plannedActivityRepository.findAll(PageRequest.of(pageNo, pageSize))

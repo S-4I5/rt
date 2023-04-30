@@ -1,5 +1,6 @@
 package com.example.rt.membership;
 
+import com.example.rt.membership.dto.MembershipApplicationDTO;
 import com.example.rt.membership.requests.MembershipApplicationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
