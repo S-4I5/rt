@@ -15,7 +15,7 @@ public class PlannedActivityController {
     private final PlannedActivityService plannedActivityService;
 
     @GetMapping()
-    ResponseEntity<List<PlannedActivity>> getAllPlannedActivities(
+    ResponseEntity<List<PlannedActivityDTO>> getAllPlannedActivities(
             @RequestParam(value = "pageNo", required = false) int pageNo,
             @RequestParam(value = "pageSize", required = false) int pageSize
     ) {
@@ -23,12 +23,12 @@ public class PlannedActivityController {
     }
 
     @PostMapping()
-    ResponseEntity<PlannedActivity> suggestPlannedActivity(@RequestBody PostPlannedActivityRequest request, Authentication authentication) {
+    ResponseEntity<PlannedActivityDTO> suggestPlannedActivity(@RequestBody PostPlannedActivityRequest request, Authentication authentication) {
         return ResponseEntity.ok(plannedActivityService.suggestEvent(request, authentication.getName()));
     }
 
     @PutMapping("{id}")
-    ResponseEntity<PlannedActivity> acceptPlannedActivity(@PathVariable long id) {
+    ResponseEntity<PlannedActivityDTO> acceptPlannedActivity(@PathVariable long id) {
         return ResponseEntity.ok(plannedActivityService.acceptEvent(id));
     }
 }
