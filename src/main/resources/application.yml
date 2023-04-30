@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://127.0.0.1:5432/test
+    url: jdbc:postgresql://host.docker.internal:5432/test
     username: postgres
     password: password
   jpa:
@@ -21,3 +21,9 @@ spring:
     protocol: smtps
 mail:
   debug: true
+s3:
+  access-key: minio
+  secret-key: minio123
+  signing-region: null
+  service-endpoint: http://localhost:9000
+
