@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Random;
 
@@ -40,6 +42,8 @@ public class MinioService {
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
         } catch (IOException ignored) {}
+
+        Files.delete(Path.of(Objects.requireNonNull(file.getOriginalFilename())));
 
         return convertedFile;
     }
