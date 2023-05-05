@@ -1,6 +1,5 @@
 package com.example.rt.auth.email_activation;
 
-import com.example.rt.auth.token.TokenType;
 import com.example.rt.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

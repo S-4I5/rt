@@ -26,6 +26,6 @@ s3:
   access-key: minio
   secret-key: minio123
   signing-region: null
-  service-endpoint: http://localhost:9000
+  service-endpoint: http://host.docker.internal:9000
   bucket-name: somebucketname
 

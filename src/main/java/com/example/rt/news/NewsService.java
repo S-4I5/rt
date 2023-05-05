@@ -1,5 +1,6 @@
 package com.example.rt.news;
 
+import com.example.rt.data.Status;
 import com.example.rt.news.comment.Comment;
 import com.example.rt.news.comment.CommentDTO;
 import com.example.rt.news.comment.CommentDTOMapper;
@@ -10,6 +11,7 @@ import com.example.rt.news.like.LikeDTOMapper;
 import com.example.rt.news.like.LikeRepository;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
+import com.example.rt.news.responses.GetNewsLikesResponse;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -58,6 +60,21 @@ public class NewsService {
         return likeRepository.findAllByNews(newsRepository.findById(id).get())
                 .stream().map(likeDTOMapper)
                 .collect(Collectors.toList());
+    }
+
+    public GetNewsLikesResponse getAmountOfLikesOnNews(long id) {
+        if (newsRepository.findById(id).isEmpty()) {
+            return GetNewsLikesResponse.builder()
+                    .message("Новость не найдена")
+                    .status(Status.FAILURE)
+                    .build();
+        }
+
+        return GetNewsLikesResponse.builder()
+                .message("Получено кол-во лайков новости")
+                .status(Status.FAILURE)
+                .amountOfLikes(likeRepository.findAllByNews(newsRepository.findById(id).get()).size())
+                .build();
     }
 
     public LikeDTO addLikeNews(long newsId, String username) {

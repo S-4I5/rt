@@ -3,21 +3,20 @@ package com.example.rt.auth;
 import com.example.rt.auth.email_activation.EmailActivationCode;
 import com.example.rt.auth.email_activation.EmailActivationCodeRepository;
 import com.example.rt.auth.requests.AuthenticationRequest;
-import com.example.rt.auth.responses.activation.ActivationSuccessResponse;
-import com.example.rt.auth.responses.registration.RegisterRequest;
-import com.example.rt.auth.responses.ResponseBase;
-import com.example.rt.auth.responses.authentication.AuthenticationFailedResponse;
-import com.example.rt.auth.responses.authentication.AuthenticationSuccedResponse;
+import com.example.rt.auth.responses.ActivationResponse;
+import com.example.rt.auth.responses.AuthenticationResponse;
+import com.example.rt.auth.requests.RegisterRequest;
+import com.example.rt.auth.responses.RegistrationResponse;
 import com.example.rt.auth.token.Token;
 import com.example.rt.auth.token.TokenRepository;
 import com.example.rt.auth.token.TokenType;
+import com.example.rt.data.Status;
 import com.example.rt.mail.MailSender;
 import com.example.rt.user.Role;
 import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,15 +35,18 @@ public class AuthenticationService {
     private final EmailActivationCodeRepository emailActivationCodeRepository;
     private final MailSender mailSender;
 
-    public ResponseBase register(RegisterRequest request) {
+    public RegistrationResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return new AuthenticationFailedResponse("User already exists");
+            return RegistrationResponse.builder()
+                    .status(Status.FAILURE)
+                    .message("Пользовтель с такой почтой уже существует")
+                    .build();
         }
 
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
-                .email(request.getEmail())
+                .email(request.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .isEnabled(false)
@@ -56,18 +58,20 @@ public class AuthenticationService {
         emailActivationCodeRepository.save(activationCode);
         mailSender.sendActivationEmail(activationCode);
 
-        System.out.println("XDD" + emailActivationCodeRepository.count());
-
-        return new ActivationSuccessResponse("Activation email was sent");
+        return RegistrationResponse.builder()
+                .status(Status.SUCCESS)
+                .message("Письмо активации выслано на почту")
+                .build();
     }
 
-    public ResponseBase activate(String code, String email){
+    public AuthenticationResponse activate(String code, String email){
         Optional<EmailActivationCode> emailActivationCode = emailActivationCodeRepository.findByCode(code)
                 .filter(x -> x.getUser().getEmail().equals(email));
 
         if(emailActivationCode.isEmpty()){
-            return AuthenticationFailedResponse.builder()
-                    .message("Invalid code")
+            return AuthenticationResponse.builder()
+                    .message("Неверный код активации")
+                    .status(Status.FAILURE)
                     .build();
         }
 
@@ -79,19 +83,40 @@ public class AuthenticationService {
 
         emailActivationCodeRepository.delete(emailActivationCode.get());
 
-        return AuthenticationSuccedResponse.builder()
+        return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .message("Аккаунт успешно активирован")
+                .status(Status.SUCCESS)
                 .id(emailActivationCode.get().user.getId())
                 .build();
     }
 
-    public AuthenticationSuccedResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+    public ActivationResponse authenticate(AuthenticationRequest request) {
+        try {
+            if(userRepository.findByEmail(request.getEmail()).isEmpty()){
+                return ActivationResponse.builder()
+                        .status(Status.FAILURE)
+                        .message("Пользователь не найден")
+                        .build();
+            }
+
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        }catch (BadCredentialsException exception){
+            return ActivationResponse.builder()
+                    .status(Status.FAILURE)
+                    .message("Неверный пароль")
+                    .build();
+        }catch (DisabledException exception){
+            return ActivationResponse.builder()
+                    .status(Status.FAILURE)
+                    .message("Подтвердите почту")
+                    .build();
+        }
 
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
@@ -99,8 +124,10 @@ public class AuthenticationService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 
-        return AuthenticationSuccedResponse.builder()
+        return ActivationResponse.builder()
                 .token(jwtToken)
+                .message("Авторизация прошла успешно")
+                .status(Status.SUCCESS)
                 .id(user.getId())
                 .build();
     }
@@ -108,7 +135,7 @@ public class AuthenticationService {
     private EmailActivationCode generateActivationCode(User user){
         return EmailActivationCode.builder()
                 .user(user)
-                .code(new Random().ints(6, 33, 122)
+                .code(new Random().ints(6, 65, 90)
                         .mapToObj(i -> String.valueOf((char)i)).collect(Collectors.joining()))
                 .build();
     }

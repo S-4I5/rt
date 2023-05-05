@@ -1,6 +1,6 @@
 package com.example.rt.feedback;
 
-import com.example.rt.feedback.responce.FeedbackPostResponce;
+import com.example.rt.feedback.responce.FeedbackPostResponse;
 import com.example.rt.mail.MailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +17,11 @@ public class FeedbackController {
     private final MailSender mailSender;
 
     @PostMapping()
-    public ResponseEntity<FeedbackPostResponce> sendMessage(
+    public ResponseEntity<FeedbackPostResponse> sendMessage(
             @RequestBody PostFeedbackRequest request,
             Authentication authentication
     ) {
         mailSender.sendFeedbackEmail(request, authentication);
-        return ResponseEntity.ok(new FeedbackPostResponce("Feedback posted"));
+        return ResponseEntity.ok(new FeedbackPostResponse("Feedback posted"));
     }
 }
