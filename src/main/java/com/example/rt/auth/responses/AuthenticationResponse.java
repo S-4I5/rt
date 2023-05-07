@@ -1,16 +1,19 @@
 package com.example.rt.auth.responses;
 
+import com.example.rt.data.ResponseBase;
 import com.example.rt.data.Status;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class AuthenticationResponse {
-    private String message;
-    private String token;
+public class AuthenticationResponse extends ResponseBase {
     private long id;
     private Status status;
+    private String token;
 }

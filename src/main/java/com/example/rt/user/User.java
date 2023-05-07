@@ -1,8 +1,6 @@
 package com.example.rt.user;
 
-import com.example.rt.user.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.Collection;
 import java.util.Date;
@@ -37,10 +34,9 @@ public class User implements UserDetails {
     //@Enumerated(EnumType.STRING
     private Role role;
     private String photo;
-    private String phone_number;
-    private Date birthday_date;
-    private boolean isMember;
+    private Date birthdayDate;
     private long balance;
+    private String phoneNumber;
     private boolean isEnabled;
 
     @Override

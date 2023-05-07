@@ -1,4 +1,4 @@
-package com.example.rt.auth.email_activation;
+package com.example.rt.auth.email_activation_code;
 
 import com.example.rt.user.User;
 import jakarta.persistence.*;

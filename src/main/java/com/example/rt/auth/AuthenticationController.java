@@ -1,11 +1,7 @@
 package com.example.rt.auth;
 
-import com.example.rt.auth.requests.AuthenticationRequest;
-import com.example.rt.auth.requests.EmailAuthenticationRequest;
-import com.example.rt.auth.responses.ActivationResponse;
-import com.example.rt.auth.responses.AuthenticationResponse;
-import com.example.rt.auth.requests.RegisterRequest;
-import com.example.rt.auth.responses.RegistrationResponse;
+import com.example.rt.auth.requests.*;
+import com.example.rt.auth.responses.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +32,28 @@ public class AuthenticationController {
             @RequestBody EmailAuthenticationRequest request
     ){
         return ResponseEntity.ok(service.activate(code, request.email()));
+    }
+
+    @PutMapping("/restore/{code}")
+    public ResponseEntity<PasswordResetResponse> restorePassword(
+            @PathVariable String code,
+            @RequestBody PasswordResetRequest request
+            ){
+        return ResponseEntity.ok(service.restorePassword(code, request));
+    }
+
+    @GetMapping("/restore/check/{code}")
+    public ResponseEntity<CheckPasswordRestoreCodeResponse> checkPasswordRestoreCode(
+            @PathVariable String code,
+            @RequestBody CheckPasswordRestoreCodeRequest request
+    ){
+        return ResponseEntity.ok(service.checkPasswordRestoreCode(code, request));
+    }
+
+    @GetMapping("/restore/{email}")
+    public ResponseEntity<CreatePasswordRestoreCodeResponse> createPasswordRestoreRequest(
+            @PathVariable String email
+    ){
+        return ResponseEntity.ok(service.sendPasswordRestoreCode(email));
     }
 }

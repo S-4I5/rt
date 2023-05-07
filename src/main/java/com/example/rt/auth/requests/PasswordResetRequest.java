@@ -1,7 +1,7 @@
 package com.example.rt.auth.requests;
 
-public record AuthenticationRequest(
+public record PasswordResetRequest(
         String email,
-        String password
+        String newPassword
 ) {
 }

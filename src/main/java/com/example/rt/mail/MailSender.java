@@ -1,6 +1,7 @@
 package com.example.rt.mail;
 
-import com.example.rt.auth.email_activation.EmailActivationCode;
+import com.example.rt.auth.email_activation_code.EmailActivationCode;
+import com.example.rt.auth.password_restore_code.PasswordRestoreCode;
 import com.example.rt.feedback.PostFeedbackRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -38,14 +39,34 @@ public class MailSender {
 
         String EMAIL_SUBJECT = "Email activation";
 
-        String AUTH_MESSAGE = String.format("Hello, %s! \n" +
+        String AUTH_MESSAGE = String.format("Hello! \n" +
                         "Welcome to RT. Your activation code is %s",
-                emailActivationCode.user.getFirstname() + " " + emailActivationCode.user.getLastname(),
                 emailActivationCode.code);
 
         SimpleMailMessage mailMessage = generateSimpleMailMessage(
                 username,
                 emailActivationCode.getUser().getEmail(),
+                EMAIL_SUBJECT,
+                AUTH_MESSAGE
+        );
+
+        mailSender.send(mailMessage);
+    }
+
+    public void sendPasswordRestoreEmail(PasswordRestoreCode passwordRestoreCode) {
+
+        String EMAIL_SUBJECT = "Смена пароля";
+
+        String AUTH_MESSAGE = String.format(
+                        "Добрый день, %s\n" +
+                        "Ваш код для смены пароля %s\n" +
+                        "Если вы не запрашивали смены пароля, то просто проигнорируйте это письмо",
+                passwordRestoreCode.getUser().getFirstname() + " " + passwordRestoreCode.getUser().getLastname(),
+                passwordRestoreCode.code);
+
+        SimpleMailMessage mailMessage = generateSimpleMailMessage(
+                username,
+                passwordRestoreCode.getUser().getEmail(),
                 EMAIL_SUBJECT,
                 AUTH_MESSAGE
         );
