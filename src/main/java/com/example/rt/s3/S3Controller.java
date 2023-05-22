@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3Controller {
     private final MinioService minioService;
 
-    @PostMapping("/post")
+    @PostMapping()
     public ResponseEntity<FilePostResponse> post(
             @RequestParam(value = "file") MultipartFile file
     ) {
@@ -24,6 +24,7 @@ public class S3Controller {
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
         byte[] data = minioService.downloadFile(fileName);
         ByteArrayResource resource = new ByteArrayResource(data);
+
         return ResponseEntity
                 .ok()
                 .contentLength(data.length)

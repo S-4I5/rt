@@ -1,5 +1,7 @@
-package com.example.rt.membership;
+package com.example.rt.membership.dto;
 
+import com.example.rt.membership.MembershipApplication;
+import com.example.rt.membership.dto.MembershipApplicationDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

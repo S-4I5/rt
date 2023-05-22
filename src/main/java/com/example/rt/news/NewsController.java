@@ -4,7 +4,8 @@ import com.example.rt.news.comment.CommentDTO;
 import com.example.rt.news.like.LikeDTO;
 import com.example.rt.news.requests.CommentNewsRequest;
 import com.example.rt.news.requests.PostNewsRequest;
-import lombok.AllArgsConstructor;
+import com.example.rt.news.responses.GetNewsLikesResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(value = "/news")
 public class NewsController {
     private final NewsService newsService;
@@ -33,6 +34,13 @@ public class NewsController {
     @PostMapping("/{id}/likes")
     public ResponseEntity<LikeDTO> likeNews(@PathVariable long id, Authentication authentication) {
         return ResponseEntity.ok(newsService.addLikeNews(id, authentication.getName()));
+    }
+
+    @GetMapping("/{id}/likes")
+    public ResponseEntity<GetNewsLikesResponse> getAmountOfLikesOnNews(
+            @PathVariable long id
+    ) {
+        return ResponseEntity.ok(newsService.getAmountOfLikesOnNews(id));
     }
 
     @GetMapping("/{id}/comments")

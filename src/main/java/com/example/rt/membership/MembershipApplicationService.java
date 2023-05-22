@@ -1,7 +1,8 @@
 package com.example.rt.membership;
 
+import com.example.rt.membership.dto.MembershipApplicationDTO;
+import com.example.rt.membership.dto.MembershipApplicationDTOMapper;
 import com.example.rt.membership.requests.MembershipApplicationRequest;
-import com.example.rt.news.comment.Comment;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
