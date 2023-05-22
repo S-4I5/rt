@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface EmailActivationCodeRepository extends JpaRepository<EmailActivationCode, Long> {
     Optional<EmailActivationCode> findByCode(String code);
+    Optional<EmailActivationCode> findByEmail(String code);
 }

@@ -16,14 +16,14 @@ public class AuthenticationController {
     public ResponseEntity<RegistrationResponse> register(
             @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok(service.register(request));
+        return service.register(request);
     }
 
-    @GetMapping("/authenticate")
+    @PutMapping("/authenticate")
     public ResponseEntity<ActivationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+        return service.authenticate(request);
     }
 
     @PutMapping("/activate/{code}")
@@ -31,7 +31,7 @@ public class AuthenticationController {
             @PathVariable String code,
             @RequestBody EmailAuthenticationRequest request
     ){
-        return ResponseEntity.ok(service.activate(code, request.email()));
+        return service.activate(code, request.email());
     }
 
     @PutMapping("/restore/{code}")
@@ -39,21 +39,21 @@ public class AuthenticationController {
             @PathVariable String code,
             @RequestBody PasswordResetRequest request
             ){
-        return ResponseEntity.ok(service.restorePassword(code, request));
+        return service.restorePassword(code, request);
     }
 
-    @GetMapping("/restore/check/{code}")
+    @PutMapping("/restore/check/{code}")
     public ResponseEntity<CheckPasswordRestoreCodeResponse> checkPasswordRestoreCode(
             @PathVariable String code,
             @RequestBody CheckPasswordRestoreCodeRequest request
     ){
-        return ResponseEntity.ok(service.checkPasswordRestoreCode(code, request));
+        return service.checkPasswordRestoreCode(code, request);
     }
 
     @GetMapping("/restore/{email}")
     public ResponseEntity<CreatePasswordRestoreCodeResponse> createPasswordRestoreRequest(
             @PathVariable String email
     ){
-        return ResponseEntity.ok(service.sendPasswordRestoreCode(email));
+        return service.sendPasswordRestoreCode(email);
     }
 }

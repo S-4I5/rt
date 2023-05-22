@@ -17,7 +17,6 @@ public class EmailActivationCode {
     @GeneratedValue
     public long id;
     public String code;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    public User user;
+    public String email;
+    public String password;
 }

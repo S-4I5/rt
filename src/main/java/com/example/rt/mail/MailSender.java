@@ -45,7 +45,7 @@ public class MailSender {
 
         SimpleMailMessage mailMessage = generateSimpleMailMessage(
                 username,
-                emailActivationCode.getUser().getEmail(),
+                emailActivationCode.getEmail(),
                 EMAIL_SUBJECT,
                 AUTH_MESSAGE
         );

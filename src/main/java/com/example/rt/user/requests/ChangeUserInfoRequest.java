@@ -15,18 +15,11 @@ import java.util.Date;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ChangeUserInfoRequest {
-    //@JsonSetter(nulls = Nulls.SKIP)
     private String firstname;
-    //@JsonSetter(nulls = Nulls.SKIP)
     private String lastname;
-    //@JsonSetter(nulls = Nulls.SKIP)
     private String email;
-    //@JsonSetter(nulls = Nulls.SKIP)
     private String password;
-    //@JsonSetter(nulls = Nulls.SKIP)
     private String photo;
-    //@JsonSetter(nulls = Nulls.SKIP)
     private Date birthdayDate;
-    //@JsonSetter(nulls = Nulls.SKIP)
     private String phoneNumber;
 }

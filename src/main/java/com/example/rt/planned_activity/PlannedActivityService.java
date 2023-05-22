@@ -30,11 +30,11 @@ public class PlannedActivityService {
         return optionalUser.map(user -> plannedActivityDTOMapper.apply(
                 plannedActivityRepository.save(
                         PlannedActivity.builder()
-                                .title(request.getTitle())
-                                .description(request.getDescription())
-                                .placeName(request.getPlaceName())
-                                .photo(request.getPhoto())
-                                .plannedDate(request.getPlannedDate())
+                                .title(request.title())
+                                .description(request.description())
+                                .placeName(request.placeName())
+                                .photo(request.photo())
+                                .plannedDate(request.plannedDate())
                                 .state(PlannedActivityState.IN_REVIEWING)
                                 .author(user)
                                 .build()

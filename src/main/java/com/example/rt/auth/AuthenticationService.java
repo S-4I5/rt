@@ -18,6 +18,7 @@ import com.example.rt.user.Role;
 import com.example.rt.user.User;
 import com.example.rt.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,78 +41,87 @@ public class AuthenticationService {
     private final MailSender mailSender;
     private final PasswordRestoreCodeRepository passwordRestoreCodeRepository;
 
-    public RegistrationResponse register(RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return RegistrationResponse.builder()
+    public ResponseEntity<RegistrationResponse> register(RegisterRequest request) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            return ResponseEntity.badRequest().body(RegistrationResponse.builder()
                     .status(Status.FAILURE)
-                    .message("Пользовтель с такой почтой уже существует")
-                    .build();
+                    .message("Пользователь уже существует")
+                    .build());
         }
 
-        var user = User.builder()
-                .email(request.getEmail().toLowerCase())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .isEnabled(false)
-                .build();
+        var activationCode = generateActivationCode(
+                request.email().toLowerCase(),
+                passwordEncoder.encode(request.password())
+        );
 
-        userRepository.save(user);
-
-        var activationCode = generateActivationCode(user);
-
-        emailActivationCodeRepository.save(activationCode);
+        Optional<EmailActivationCode> code = emailActivationCodeRepository.findByEmail(request.email());
+        if(code.isPresent()){
+            code.get().setCode(activationCode.code);
+            emailActivationCodeRepository.save(code.get());
+        } else {
+            emailActivationCodeRepository.save(activationCode);
+        }
 
         try{
 
             mailSender.sendActivationEmail(activationCode);
 
         }catch (MailException e){
-            return RegistrationResponse.builder()
+            emailActivationCodeRepository.delete(activationCode);
+
+            return ResponseEntity.badRequest().body(RegistrationResponse.builder()
                     .status(Status.FAILURE)
-                    .message("Не удалось отправить сообщения для подтверждения почты")
-                    .build();
+                    .message("Эта почта занята!")
+                    .build());
         }
 
-        return RegistrationResponse.builder()
+        return ResponseEntity.ok(RegistrationResponse.builder()
                 .status(Status.SUCCESS)
                 .message("Письмо активации выслано на почту")
-                .build();
+                .build());
     }
 
-    public AuthenticationResponse activate(String code, String email){
+    public ResponseEntity<AuthenticationResponse> activate(String code, String email){
         Optional<EmailActivationCode> emailActivationCode = emailActivationCodeRepository.findByCode(code)
-                .filter(x -> x.getUser().getEmail().equals(email));
+                .filter(x -> x.getEmail().equals(email));
 
         if(emailActivationCode.isEmpty()){
-            return AuthenticationResponse.builder()
+            return ResponseEntity.badRequest().body(AuthenticationResponse.builder()
                     .message("Неверный код активации")
                     .status(Status.FAILURE)
-                    .build();
+                    .build());
         }
 
-        emailActivationCode.get().user.setEnabled(true);
+        var user = User.builder()
+                .email(emailActivationCode.get().email)
+                .password(emailActivationCode.get().password)
+                .role(Role.USER)
+                .isEnabled(true)
+                .build();
 
-        var jwtToken = jwtService.generateToken(emailActivationCode.get().user);
+        userRepository.save(user);
 
-        saveUserToken(emailActivationCode.get().user, jwtToken);
+        var jwtToken = jwtService.generateToken(user);
+
+        saveUserToken(user, jwtToken);
 
         emailActivationCodeRepository.delete(emailActivationCode.get());
 
-        return AuthenticationResponse.builder()
+        return ResponseEntity.ok(AuthenticationResponse.builder()
                 .token(jwtToken)
                 .message("Аккаунт успешно активирован")
                 .status(Status.SUCCESS)
-                .id(emailActivationCode.get().user.getId())
-                .build();
+                .id(user.getId())
+                .build());
     }
 
-    public ActivationResponse authenticate(AuthenticationRequest request) {
+    public ResponseEntity<ActivationResponse> authenticate(AuthenticationRequest request) {
         try {
             if(userRepository.findByEmail(request.email()).isEmpty()){
-                return ActivationResponse.builder()
+                return ResponseEntity.badRequest().body(ActivationResponse.builder()
                         .status(Status.FAILURE)
                         .message("Пользователь не найден")
-                        .build();
+                        .build());
             }
 
             authenticationManager.authenticate(
@@ -121,15 +131,15 @@ public class AuthenticationService {
                     )
             );
         }catch (BadCredentialsException exception){
-            return ActivationResponse.builder()
+            return ResponseEntity.badRequest().body(ActivationResponse.builder()
                     .status(Status.FAILURE)
                     .message("Неверный пароль")
-                    .build();
+                    .build());
         }catch (DisabledException exception){
-            return ActivationResponse.builder()
+            return ResponseEntity.badRequest().body(ActivationResponse.builder()
                     .status(Status.FAILURE)
                     .message("Подтвердите почту")
-                    .build();
+                    .build());
         }
 
         User user = userRepository.findByEmail(request.email()).orElseThrow();
@@ -138,21 +148,21 @@ public class AuthenticationService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 
-        return ActivationResponse.builder()
+        return ResponseEntity.ok(ActivationResponse.builder()
                 .token(jwtToken)
                 .message("Авторизация прошла успешно")
                 .status(Status.SUCCESS)
                 .id(user.getId())
-                .build();
+                .build());
     }
 
-    public PasswordResetResponse restorePassword(String code, PasswordResetRequest request){
+    public ResponseEntity<PasswordResetResponse> restorePassword(String code, PasswordResetRequest request){
         Optional<PasswordRestoreCode> restoreCode = passwordRestoreCodeRepository.findByCode(code);
         if(restoreCode.isEmpty() || !Objects.equals(restoreCode.get().user.getEmail(), request.email())){
-            return PasswordResetResponse.builder()
+            return ResponseEntity.badRequest().body(PasswordResetResponse.builder()
                     .message("Неверный код")
                     .status(Status.FAILURE)
-                    .build();
+                    .build());
         }
 
         restoreCode.get().user.setPassword(passwordEncoder.encode(request.newPassword()));
@@ -161,21 +171,21 @@ public class AuthenticationService {
 
         saveUserToken(restoreCode.get().user, jwtToken);
 
-        return PasswordResetResponse.builder()
+        return ResponseEntity.ok(PasswordResetResponse.builder()
                 .message("Смена пароля прошла успешно")
                 .status(Status.SUCCESS)
                 .token(jwtToken)
-                .build();
+                .build());
     }
 
-    public CreatePasswordRestoreCodeResponse sendPasswordRestoreCode(String email){
+    public ResponseEntity<CreatePasswordRestoreCodeResponse> sendPasswordRestoreCode(String email){
         Optional<User> user = userRepository.findByEmail(email);
 
         if(user.isEmpty()){
-            return new CreatePasswordRestoreCodeResponse(
-                    "Пользователь не существует",
-                    Status.FAILURE
-            );
+            return ResponseEntity.badRequest().body(CreatePasswordRestoreCodeResponse.builder()
+                    .message("Пользователь не существует")
+                    .status(Status.FAILURE)
+                    .build());
         }
 
         var activationCode = generatePasswordRestoreCode(user.get());
@@ -189,49 +199,52 @@ public class AuthenticationService {
             mailSender.sendPasswordRestoreEmail(activationCode);
 
         }catch (MailException e){
-            return new CreatePasswordRestoreCodeResponse(
-                    "Не удалось отправить код для смены пароля",
-                    Status.FAILURE
-            );
+            return ResponseEntity.badRequest().body(CreatePasswordRestoreCodeResponse.builder()
+                    .message("Не удалось отправить код для смены пароля")
+                    .status(Status.FAILURE)
+                    .build());
         }
 
-        return new CreatePasswordRestoreCodeResponse(
-                "Письмо активации выслано на почту",
-                Status.SUCCESS
-        );
-
+        return ResponseEntity.ok(CreatePasswordRestoreCodeResponse.builder()
+                .message("Письмо активации выслано на почту")
+                .status(Status.SUCCESS)
+                .build());
     }
 
-    public CheckPasswordRestoreCodeResponse checkPasswordRestoreCode(String code, CheckPasswordRestoreCodeRequest request){
+    public ResponseEntity<CheckPasswordRestoreCodeResponse> checkPasswordRestoreCode(String code, CheckPasswordRestoreCodeRequest request){
         Optional<PasswordRestoreCode> restoreCode = passwordRestoreCodeRepository.findByCode(code);
 
         if(restoreCode.isEmpty() || !Objects.equals(restoreCode.get().user.getEmail(), request.email())){
-            return new CheckPasswordRestoreCodeResponse(
-                    "Неверный код",
-                    Status.FAILURE
-            );
+            return ResponseEntity.badRequest().body(CheckPasswordRestoreCodeResponse.builder()
+                    .message("Неверный код")
+                    .status(Status.FAILURE)
+                    .build());
         }
 
-        return new CheckPasswordRestoreCodeResponse(
-                "Код верный",
-                Status.SUCCESS
-        );
+        return ResponseEntity.ok(CheckPasswordRestoreCodeResponse.builder()
+                .message("Код верный")
+                .status(Status.SUCCESS)
+                .build());
     }
 
     private PasswordRestoreCode generatePasswordRestoreCode(User user){
         return PasswordRestoreCode.builder()
                 .user(user)
-                .code(new Random().ints(6, 65, 90)
-                        .mapToObj(i -> String.valueOf((char)i)).collect(Collectors.joining()))
+                .code(generateCode())
                 .build();
     }
 
-    private EmailActivationCode generateActivationCode(User user){
+    private EmailActivationCode generateActivationCode(String email, String password){
         return EmailActivationCode.builder()
-                .user(user)
-                .code(new Random().ints(6, 65, 90)
-                        .mapToObj(i -> String.valueOf((char)i)).collect(Collectors.joining()))
+                .password(password)
+                .email(email)
+                .code(generateCode())
                 .build();
+    }
+
+    private String generateCode(){
+        return new Random().ints(6, 65, 90)
+                .mapToObj(i -> String.valueOf((char)i)).collect(Collectors.joining());
     }
 
     private void saveUserToken(User user, String jwtToken) {

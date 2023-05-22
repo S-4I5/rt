@@ -1,8 +1,13 @@
 package com.example.rt.auth.responses;
 
-import com.example.rt.data.Status;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
-public record CreatePasswordRestoreCodeResponse(
-        String message,
-        Status status
-){}
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+public class CreatePasswordRestoreCodeResponse extends PasswordResetResponse{
+}
