@@ -31,7 +31,7 @@ public class MinioService {
         String fileName = System.currentTimeMillis() + new Random().nextInt() + "_" + file.getOriginalFilename();
 
         minioClient.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-
+      
         return fileName;
     }
 
